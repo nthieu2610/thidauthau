@@ -80,7 +80,7 @@
   }
 
   // Fetch dữ liệu từ file data.json
-  fetch('data.json')
+  fetch('https://raw.githubusercontent.com/nthieu2610/thidauthau/main/data.json')
     .then(response => response.json())
     .then(jsonData => {
       data.push(...jsonData);
