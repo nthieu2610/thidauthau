@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tìm kiếm câu hỏi</title>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  .search-container {
+    position: relative;
+    display: inline-block;
+  }
+  .search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+  }
+  .clear-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .result-item {
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+    padding: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Tìm kiếm câu hỏi</h1>
+
+<div class="search-container">
+  <input type="text" id="search-input" class="search-input" placeholder="Nhập nội dung tìm kiếm...">
+  <button id="clear-button" class="clear-button">X</button>
+</div>
+
+<div id="results"></div>
+
+<script>
+  const data = [
+    // Dữ liệu JSON sẽ được thêm vào đây
+  ];
+
+  const searchInput = document.getElementById('search-input');
+  const clearButton = document.getElementById('clear-button');
+  const resultsContainer = document.getElementById('results');
+
+  searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    const filteredData = data.filter(item => {
+      return item.CauHoi.toLowerCase().includes(searchTerm);
+    });
+    renderResults(filteredData);
+  });
+
+  clearButton.addEventListener('click', () => {
+    searchInput.value = '';
+    renderResults([]);
+  });
+
+  function renderResults(results) {
+    resultsContainer.innerHTML = '';
+    results.forEach(item => {
+      const resultItem = document.createElement('div');
+      resultItem.classList.add('result-item');
+      resultItem.innerHTML = `
+        <h3>${item.CauHoi}</h3>
+        <p><strong>Đáp án đúng:</strong> ${item.DapAnDung}</p>
+      `;
+      resultsContainer.appendChild(resultItem);
+    });
+  }
+
+  // Fetch dữ liệu từ file data.json
+  fetch('data.json')
+    .then(response => response.json())
+    .then(jsonData => {
+      data.push(...jsonData);
+    });
+</script>
+
+</body>
+</html>
