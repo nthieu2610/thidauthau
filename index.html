@@ -2,20 +2,27 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Tìm kiếm câu hỏi</title>
 		<style>
 			body {
 				font-family: sans-serif;
+				margin: 0;
 			}
 			.search-container {
 				position: relative;
-				display: inline-block;
+				display: block;
+				width: 100%;
+				padding: 10px;
+				box-sizing: border-box;
 			}
 			.search-input {
 				padding: 10px;
 				border: 1px solid #ccc;
 				border-radius: 5px;
-				width: 300px;
+				width: calc(100% - 30px);
+				box-sizing: border-box;
+				word-break: break-word;
 			}
 			.clear-button {
 				position: absolute;
@@ -30,6 +37,20 @@
 				margin-bottom: 10px;
 				border: 1px solid #eee;
 				padding: 10px;
+			}
+
+			/* CSS for smaller screens */
+			@media (max-width: 600px) {
+				h1 {
+					font-size: 1.5em;
+					margin: 10px;
+				}
+				.search-input {
+					font-size: 1em;
+				}
+				.result-item {
+					font-size: 0.9em;
+				}
 			}
 		</style>
 	</head>
@@ -61,10 +82,10 @@
 			const resultsContainer = document.getElementById('results');
 			const keywordCheckbox = document.getElementById('keyword-checkbox');
 
-			let currentSearchTerm = ''; // Biến lưu trữ nội dung tìm kiếm hiện tại
+			let currentSearchTerm = '';
 
 			searchInput.addEventListener('input', () => {
-				currentSearchTerm = searchInput.value.toLowerCase(); // Cập nhật nội dung tìm kiếm
+				currentSearchTerm = searchInput.value.toLowerCase();
 				filterAndRenderResults();
 			});
 
