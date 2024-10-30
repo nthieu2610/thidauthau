@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Tìm kiếm câu hỏi</title>
+		<style>
+			body {
+				font-family: sans-serif;
+			}
+			.search-container {
+				position: relative;
+				display: inline-block;
+			}
+			.search-input {
+				padding: 10px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				width: 300px;
+			}
+			.clear-button {
+				position: absolute;
+				top: 50%;
+				right: 10px;
+				transform: translateY(-50%);
+				background: none;
+				border: none;
+				cursor: pointer;
+			}
+			.result-item {
+				margin-bottom: 10px;
+				border: 1px solid #eee;
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Tìm kiếm câu hỏi</h1>
+
+		<div class="search-container">
+			<input
+				type="text"
+				id="search-input"
+				class="search-input"
+				placeholder="Nhập nội dung tìm kiếm..."
+			/>
+			<button id="clear-button" class="clear-button">X</button>
+		</div>
+
+		<label>
+			<input type="checkbox" id="keyword-checkbox" />
+			Tìm kiếm theo từ khóa đầu tiên
+		</label>
+
+		<div id="results"></div>
+
+		<script>
+			const data = [];
+
+			const searchInput = document.getElementById('search-input');
+			const clearButton = document.getElementById('clear-button');
+			const resultsContainer = document.getElementById('results');
+			const keywordCheckbox = document.getElementById('keyword-checkbox');
+
+			let currentSearchTerm = ''; // Biến lưu trữ nội dung tìm kiếm hiện tại
+
+			searchInput.addEventListener('input', () => {
+				currentSearchTerm = searchInput.value.toLowerCase(); // Cập nhật nội dung tìm kiếm
+				filterAndRenderResults();
+			});
+
+			keywordCheckbox.addEventListener('change', () => {
+				filterAndRenderResults();
+			});
+
+			clearButton.addEventListener('click', () => {
+				searchInput.value = '';
+				currentSearchTerm = '';
+				renderResults([]);
+			});
+
+			function filterAndRenderResults() {
+				const useKeywords = keywordCheckbox.checked;
+				const filteredData = data.filter((item) => {
+					if (useKeywords) {
+						const firstWords = item.CauHoi.toLowerCase()
+							.split(' ')
+							.slice(0, currentSearchTerm.split(' ').length)
+							.join(' ');
+						return firstWords.startsWith(currentSearchTerm);
+					} else {
+						return item.CauHoi.toLowerCase().includes(currentSearchTerm);
+					}
+				});
+				renderResults(filteredData);
+			}
+
+			function renderResults(results) {
+				resultsContainer.innerHTML = '';
+				results.forEach((item) => {
+					const resultItem = document.createElement('div');
+					resultItem.classList.add('result-item');
+					resultItem.innerHTML = `
+        <h3>${item.CauHoi}</h3>
+        ${item.CacDapAn.map((dapAn) => `<p>${dapAn}</p>`).join('')}
+        <p><strong>Đáp án đúng:</strong> ${item.DapAnDung}</p>
+      `;
+					resultsContainer.appendChild(resultItem);
+				});
+			}
+
+			fetch('https://raw.githubusercontent.com/nthieu2610/thidauthau/main/data.json')
+				.then((response) => response.json())
+				.then((jsonData) => {
+					data.push(...jsonData);
+				});
+		</script>
+	</body>
+</html>
